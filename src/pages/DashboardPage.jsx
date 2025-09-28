@@ -8,6 +8,7 @@ import HourlyTrafficChart from './HourlyTrafficChart';
 function DashboardPage() {
   const [visitors, setVisitors] = useState([]);
   const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const q = query(collection(db, 'visitors'), orderBy('checkInTime', 'desc'));
@@ -21,6 +22,24 @@ function DashboardPage() {
     });
     return () => unsubscribe();
   }, []);
+
+
+  // This hook calculates the filtered list of visitors
+const filteredVisitors = useMemo(() => {
+  if (!searchTerm) {
+    // If the search bar is empty, return the original full list
+    return visitors;
+  }
+  // Otherwise, filter the list
+  return visitors.filter(visitor =>
+    // Convert both the name and search term to lower case for case-insensitive matching
+    visitor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    visitor.company.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+}, [visitors, searchTerm]); // Dependencies: This code re-runs only when visitors or searchTerm changes
+
+
+
 
   // --- DATA PROCESSING FOR CHARTS ---
   // useMemo prevents this heavy calculation from running on every single render.
@@ -75,9 +94,35 @@ function DashboardPage() {
       {/* --- The visitor table remains the same --- */}
       <main>
         <h2>Visitor Log</h2>
+        {/* ADD THIS SEARCH BAR */}
+  <div className="search-container">
+    <input
+      type="text"
+      placeholder="Search by name or company..."
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+    />
+  </div>
         {loading && <p>Loading visitors...</p>}
         <table>
-          {/* ... your existing table code ... */}
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Company</th>
+              <th>Check-In Time</th>
+              <th>Check-Out Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredVisitors.map((visitor) => (
+              <tr key={visitor.id} className={visitor.checkOutTime ? 'checked-out' : ''}>
+                <td>{visitor.name}</td>
+                <td>{visitor.company}</td>
+                <td>{visitor.checkInTime?.toDate().toLocaleTimeString()}</td>
+                <td>{visitor.checkOutTime ? visitor.checkOutTime.toDate().toLocaleTimeString() : '---'}</td>
+              </tr>
+            ))}
+          </tbody>
         </table>
       </main>
     </div>
