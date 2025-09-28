@@ -71,13 +71,8 @@ const filteredVisitors = useMemo(() => {
     return { companyData, trafficData };
   }, [visitors]); // This dependency array tells useMemo to re-run only when 'visitors' changes
 
-  return (
+return (
     <div className="dashboard-container">
-      <header>
-        <h1>Receptionist Dashboard</h1>
-      </header>
-
-      {/* --- RENDER THE CHARTS --- */}
       {!loading && (
         <div className="charts-container">
           <div className="chart">
@@ -91,40 +86,43 @@ const filteredVisitors = useMemo(() => {
         </div>
       )}
 
-      {/* --- The visitor table remains the same --- */}
-      <main>
+      {/* Wrap the log in a new container */}
+      <div className="log-container">
         <h2>Visitor Log</h2>
-        {/* ADD THIS SEARCH BAR */}
-  <div className="search-container">
-    <input
-      type="text"
-      placeholder="Search by name or company..."
-      value={searchTerm}
-      onChange={(e) => setSearchTerm(e.target.value)}
-    />
-  </div>
+        <div className="search-container">
+          <input
+            type="text"
+            placeholder="Search by name or company..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+
         {loading && <p>Loading visitors...</p>}
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Company</th>
-              <th>Check-In Time</th>
-              <th>Check-Out Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredVisitors.map((visitor) => (
-              <tr key={visitor.id} className={visitor.checkOutTime ? 'checked-out' : ''}>
-                <td>{visitor.name}</td>
-                <td>{visitor.company}</td>
-                <td>{visitor.checkInTime?.toDate().toLocaleTimeString()}</td>
-                <td>{visitor.checkOutTime ? visitor.checkOutTime.toDate().toLocaleTimeString() : '---'}</td>
+        
+        <div className="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Company</th>
+                <th>Check-In Time</th>
+                <th>Check-Out Time</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </main>
+            </thead>
+            <tbody>
+              {filteredVisitors.map((visitor) => (
+                <tr key={visitor.id} className={visitor.checkOutTime ? 'checked-out' : ''}>
+                  <td>{visitor.name}</td>
+                  <td>{visitor.company}</td>
+                  <td>{visitor.checkInTime?.toDate().toLocaleTimeString()}</td>
+                  <td>{visitor.checkOutTime ? visitor.checkOutTime.toDate().toLocaleTimeString() : '---'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }
