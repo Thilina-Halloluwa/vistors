@@ -15,3 +15,33 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helve
 .dashboard-container th, .dashboard-container td { padding: 1rem; text-align: left; border-bottom: 1px solid #eee; }
 .dashboard-container th { background-color: #fafafa; }
 .dashboard-container .checked-out { color: #888; background-color: #f9f9f9; }
+
+/* Add these new styles to your existing App.css file */
+
+.charts-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two equal columns */
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.chart {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.chart h2 {
+  margin-top: 0;
+  text-align: center;
+  font-size: 1.2rem;
+  color: #555;
+}
+
+/* Make grid responsive on smaller screens */
+@media (max-width: 768px) {
+  .charts-container {
+    grid-template-columns: 1fr; /* Stack charts on top of each other */
+  }
+}
